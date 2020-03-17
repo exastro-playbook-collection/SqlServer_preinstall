@@ -1,0 +1,90 @@
+---
+# not check `COMPLIANCE020201` by ansible-lint
+# Create directory
+  - name: Preapre Directory for Installer
+    win_file:
+      path: "{{ VAR_Installer_Path }}"
+      state: directory
+
+# Open port when firewall running
+  - name: Config FireWall Port in
+    win_firewall_rule:
+      name: "{{ item.Name }} in"
+      localport: "{{ item.Port }}"
+      action: allow
+      direction: in
+      protocol: "{{ item.Protocol }}"
+      profiles: "{{ item.Profiles }}"
+      state: present
+      enabled: yes
+    when: item is not none
+    with_items: "{{ VAR_FireWall_Rule }}"
+
+  - name: Config FireWall Port out
+    win_firewall_rule:
+      name: "{{ item.Name }} out"
+      localport: "{{ item.Port }}"
+      action: allow
+      direction: out
+      protocol: "{{ item.Protocol }}"
+      profiles: "{{ item.Profiles }}"
+      state: present
+      enabled: yes
+    when: item is not none
+    with_items: "{{ VAR_FireWall_Rule }}"
+
+# Download installer
+  - name: download installer
+    block:
+    - name: Transport Installer by URL
+      win_get_url:
+        url: "{{ VAR_Installer_URL }}/{{ item }}"
+        dest: "{{ VAR_Installer_Path }}\\{{ item }}"
+      register: Transport_by_URL
+      with_items: "{{ VAR_Installer_Name }}"
+      when: VAR_Installer_URL is not none
+    when:
+      - VAR_Installer_URL is defined
+      - not VAR_Installer_Type == "PATH"
+
+# Copy installer
+  - name: Copy installer
+    block:
+    - name: Transport installer by WinCopy
+      win_copy:
+        src: "{{ item }}"
+        dest: "{{ VAR_Installer_Path }}\\{{ item }}"
+      with_items: "{{ VAR_Installer_Name }}"
+      when:
+        - VAR_WinCopy
+        - Transport_by_URL.results.0 is skipped
+    when:
+      - VAR_WinCopy is defined
+      - not VAR_Installer_Type == "PATH"
+
+  - name: check the folder
+    block:
+    - name: Installer_Name
+      register: Installer_Name
+      set_fact: Installer_Name = "{{ item }}"
+      when: '".exe" in item'
+      with_items:
+        - "{{ VAR_Installer_Name }}"
+    when: VAR_Installer_Type == "CMP"
+
+# Unzip installer
+  - name: Unzip ISO Installer
+    win_disk_image:
+      image_path: "{{ VAR_Installer_Path }}\\{{ item }}"
+    with_items: "{{ VAR_Installer_Name }}"
+    when: VAR_Installer_Type == "ISO"
+    register: SQLServer_image_out
+
+  - name: Unzip CMP Installer
+    raw: "{{ VAR_Installer_Path }}\\{{ Installer_Name.results.0.item }} /x:{{ VAR_Installer_Unzip_Path }} /q"
+    when: VAR_Installer_Type == "CMP"
+
+  - name: Save SQLServer Image Path
+    set_fact:
+      SQLServer_image_out_path: "{{ SQLServer_image_out.results.0.mount_path }}"
+    when: VAR_Installer_Type == "ISO"

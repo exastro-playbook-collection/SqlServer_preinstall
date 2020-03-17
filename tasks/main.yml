@@ -1,0 +1,16 @@
+---
+
+# Acquire OS information at the time of playbook execution
+  # - name: Display OS and Version
+    # debug : msg="OS distribution is {{ ansible_distribution }}."
+
+# Display an error message in the case of an environment different from the OS version set by the default value of Playbook.
+  - name: Check OS Distribution
+    fail : msg="This Playbook is only for {{ VAR_SQLServer_OS_Version }}."
+    when:  VAR_SQLServer_OS_Version not in ansible_distribution
+
+# Select Playbook to run
+  - name: Run check_before Playbook
+    import_tasks: 'check_before.yml'
+    when: VAR_SQLServer_OS_Version in ansible_distribution
+

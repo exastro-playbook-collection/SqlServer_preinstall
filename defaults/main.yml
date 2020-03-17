@@ -1,0 +1,84 @@
+---
+
+# # Common Setings ##
+# For Check System Version
+VAR_SQLServer_OS_Version: Windows Server 2016                                   # ターゲットホストのOSバージョン
+# When SQLServer has been installed, the program does not stop and skip preinstall & install Role。
+VAR_AllowSkip_SQLServerSWExist: false                                           # 既に指定のSQLServerインスタンスがインストールされた場合、処理を中止しないで事前準備ロールとSQLServerのInstallロールをスキップする/しない：true/false（デフォルトはfalse）
+# For storage tmp file
+VAR_Tmp_Folder: C:\Temp\AnsibleforSQLServer                                     # インストール用一時フォルダ
+# The path of sysinfo which fetch from remote
+VAR_Sysinfo_Path: /tmp                                                          # ターゲットホストのシステム情報を確認するパス
+# The path of installer and where to mount it. Make sure this path have enough space.
+VAR_Installer_Path: C:\Temp\AnsibleforSQLServer                                 # SQLServerインストールパッケージのファイル格納パス
+VAR_Installer_URL: http://192.168.1.18:8080                                     # SQLServerインストールパッケージのファイルのWeb格納URL
+# FileName of Installer
+VAR_Installer_Name: SQLServer2016SP1-FullSlipstream-x64-JPN.iso                 # SQLServerインストールパッケージのファイル名（ISOファイル）
+# インストール物件の類型を指定する
+VAR_Installer_Type: ISO                                                         # SQLServerインストールパッケージのファイル類型を指定する。（ISO、CMP、PATHという三つの設定項目）
+VAR_WinCopy: false                                                              # trueの場合、win_copyで利用して物件をコピーする。VAR_Installer_URLが設定された場合、win_get_urlで利用して物件をダウンロードする。
+# 展開されたインストール物件のフルパスを指定する
+VAR_Installer_Unzip_Path:                                                       # VAR_Installer_TypeがISO或はCMPの場合、Role：SQLServerインストールのみ実施する時、AnsibleでISOファイル或はCMPファイルを展開していないため、手動的にそのISOファイル或はCMPファイルを展開する必要。その時、展開されたフルパスを事前に設定する必要（例：E:\）。VAR_Installer_TypeがPATHの場合、直接に展開されたインストール物件のフルパスを設定してください。
+
+# If the FireWall is running, this port will be set for allow.
+VAR_FireWall_Rule:                                                              # Firewallが有効の場合、関連のポート番号の通信許可を設定する
+# Name
+# Port
+# Protocol
+# Profiles
+# Name
+# Port
+# Protocol
+# Profiles
+# Name
+# Port
+# Protocol
+# Profiles
+# Name
+# Port
+# Protocol
+# Profiles
+# Name
+# Port
+# Protocol
+# Profiles
+# Name
+# Port
+# Protocol
+# Profiles
+# Name
+# Port
+# Protocol
+# Profiles
+# Name
+# Port
+# Protocol
+# Profiles
+# Name
+# Port
+# Protocol
+# Profiles
+# Name
+# Port
+# Protocol
+# Profiles
+# Name
+# Port
+# Protocol
+# Profiles
+# Name
+# Port
+# Protocol
+# Profiles
+# Name
+# Port
+# Protocol
+# Profiles
+# Name
+# Port
+# Protocol
+# Profiles
+
+# # FOR INI INSTALL ##
+# VAR_INSTANCEID
+VAR_INSTANCENAME: MSSQLSERVER                                                   # 必須項目。SQL Server インスタンス名を指定する。

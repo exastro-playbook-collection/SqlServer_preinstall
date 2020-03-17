@@ -1,0 +1,15 @@
+galaxy_info:
+  role_name: SqlServer_preinstall
+  description: Preinstall SqlServer.
+  author: NEC Corporation
+  company: NEC Corporation
+  license: Apache License 2.0
+  min_ansible_version: 2.4
+  platforms:
+    - name: Windows
+      versions:
+        - 2016
+  galaxy_tags: []
+  categories: []
+
+dependencies: []

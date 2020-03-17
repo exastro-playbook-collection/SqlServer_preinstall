@@ -1,0 +1,24 @@
+################################################################################
+Host Name: {{ win_hostname.stdout | trim }}
+IP: 
+{{ win_ipadress.stdout }}
+Remote Time: {{ win_remote_time.stdout | trim }}
+################################################################################
+<<OS>>
+Kernel Version: {{ ansible_distribution_version }}
+Windows Version: {{ ansible_distribution }}
+################################################################################
+<<Hardware>>
+CPU: 
+{{ win_cpu_info.stdout | trim }}
+Physical RAM Size: {{ win_total_physical_memory.stdout | trim }}
+Physical RAM Free Size: {{ win_free_physical_memory.stdout | trim }}
+Virtual Memory Size: {{ win_total_virtual_memory.stdout | trim }}
+Virtual Memory Free Size: {{ win_free_virtual_memory.stdout | trim }}
+Swap Free Size: {{ win_free_swap_size.stdout | trim }}
+Disk State: 
+{{ free_disk_size.stdout | trim }}
+################################################################################
+<<Firewall>>
+{{ win_firewall_status.stdout | trim }}
+

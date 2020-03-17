@@ -1,0 +1,11 @@
+---
+command:
+  - Get-ChildItem -Recurse {{ VAR_Installer_Path }}
+  - Get-NetFirewallRule
+  - Get-ChildItem -Recurse {{ VAR_INI_Path }}
+  - Get-Content {{ VAR_INI_Path }}\ConfigurationFile.ini
+  - Get-Service | findstr 'SQL Server'
+  - Get-ItemProperty -Path 'HKLM:\Software\Microsoft\Microsoft SQL Server'
+  - Get-ChildItem -Recurse 'C:\Program Files\Microsoft SQL Server'
+  - Get-ChildItem -Recurse 'C:\Program Files (x86)\Microsoft SQL Server'
+  - Get-ChildItem -Recurse '{{ VAR_INSTANCEDIR }}'

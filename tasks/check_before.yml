@@ -1,0 +1,122 @@
+---
+# not check `COMPLIANCE020201` by ansible-lint
+# Check if SqlServer is already installed
+  - name: Check SqlServer Instance already Exists
+    win_reg_stat:
+      path: "HKLM:\\Software\\Microsoft\\Microsoft SQL Server"
+      name: InstalledInstances
+    register: SQLInstance_regedit
+    tags: SqlServer_preinstall_gathersysinfo
+
+  - name: Set SqlServer Instance Status Flag
+    set_fact: SQLInstance_state=false
+    tags: SqlServer_preinstall_gathersysinfo
+
+  - name: failed when sqlserver already install
+    block:
+    - name: Failed when Exists
+      fail:
+        msg: "{{ VAR_INSTANCENAME }} is already installed"
+      when:
+        - not VAR_AllowSkip_SQLServerSWExist
+        - VAR_INSTANCENAME in SQLInstance_regedit.value
+
+    - name: Set Instance Status Flag
+      set_fact: SQLInstance_state=true
+      when:
+        - VAR_INSTANCENAME in SQLInstance_regedit.value
+    when: SQLInstance_regedit.exists
+    tags: SqlServer_preinstall_gathersysinfo
+
+  - name: save the information
+    block:
+    - name: create tmp directory
+      win_file:
+        path: "{{ VAR_Tmp_Folder }}"
+        state: directory
+
+# Get System information
+    - name: Get System information
+      block:
+
+# Get System HostName
+      - name: Get HostName
+        raw: Get-WmiObject -Class Win32_ComputerSystem name | Select-Object Name | Format-Wide
+        register: win_hostname
+
+# Get System IP
+      - name: Get IP Address
+        raw: (ipconfig | findstr "IPv4")
+        register: win_ipadress
+
+# Get System Time
+      - name: Get Remote Time
+        raw: Get-Date
+        register: win_remote_time
+
+# Get Remote Cpu Info
+      - name: Get Processor Info
+        raw: Get-WmiObject -Class Win32_Processor | Select-Object Name | Format-List
+        register: win_cpu_info
+
+# Get System Memory Info
+      - name: Get Total Physical Memory Size
+        raw: Get-WmiObject -Class Win32_OperatingSystem -Namespace root/cimv2 -ComputerName . | %{$sum = 0} { $sum += $_.TotalVisibleMemorySize } {$sum = $sum / 1024} {Write-Host ([int]$sum) "MB"}
+        register: win_total_physical_memory
+
+      - name: Get Free Physical Memory Size
+        raw: Get-WmiObject -Class Win32_OperatingSystem -Namespace root/cimv2 -ComputerName . | %{$sum = 0} { $sum += $_.FreePhysicalMemory } {$sum = $sum / 1024} {Write-Host ([int]$sum) "MB"}
+        register: win_free_physical_memory
+
+      - name: Get Total Virtual Memory Size
+        raw: Get-WmiObject -Class Win32_OperatingSystem -Namespace root/cimv2 -ComputerName . | %{$sum = 0} { $sum += $_.TotalVirtualMemorySize } {$sum = $sum / 1024} {Write-Host ([int]$sum) "MB"}
+        register: win_total_virtual_memory
+
+      - name: Get Free Virtual Memory Size
+        raw: Get-WmiObject -Class Win32_OperatingSystem -Namespace root/cimv2 -ComputerName . | %{$sum = 0} { $sum += $_.FreeVirtualMemory } {$sum = $sum / 1024} {Write-Host ([int]$sum) "MB"}
+        register: win_free_virtual_memory
+
+      - name: Get Free Swap Size
+        raw: Get-WmiObject -Class Win32_OperatingSystem -Namespace root/cimv2 -ComputerName . | %{$sum = 0} { $sum += $_.FreeSpaceInPagingFiles } {$sum = $sum / 1024} {Write-Host ([int]$sum) "MB"}
+        register: win_free_swap_size
+
+# Get System Disk Info
+      - name: Get Disk state
+        raw: Get-WMIObject Win32_LogicalDisk | Foreach-Object { 'Disk {0} has {1:0.0} GB space available' -f $_.Caption, ($_.FreeSpace / 1024MB) }
+        register: free_disk_size
+
+# Get System Firewall Status
+      - name: Get Firewall Status
+        raw: Get-NetFirewallProfile | Format-list Name,Enabled
+        register: win_firewall_status
+
+# Get DNS Status
+      - name: Get DNS Status
+        raw: Get-DnsClientServerAddress -AddressFamily IPv4
+        register: win_DNS
+
+# make a file for system information
+      - name: echo systminfo
+        win_template:
+          src: sysinfo.txt.j2
+          dest: "{{ VAR_Tmp_Folder }}\\sysinfo.txt"
+
+# fetch system information file
+      - name: fetching systminfo from remote
+        fetch:
+          src: "{{ VAR_Tmp_Folder }}\\sysinfo.txt"
+          dest: "{{ VAR_Sysinfo_Path }}"
+
+# delete remote system infomation
+      - name: delete remote tmp file
+        win_file:
+          path: "{{ VAR_Tmp_Folder }}\\sysinfo.txt"
+          state: absent
+    tags: SqlServer_preinstall_gathersysinfo
+    when: not SQLInstance_state
+
+# Run install playbook
+  - name: Run Playbook
+    import_tasks: config_before.yml
+    when: not SQLInstance_state
+

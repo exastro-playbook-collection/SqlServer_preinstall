@@ -1,0 +1,145 @@
+---
+
+# # Common Setings ##
+# For Check System Version
+VAR_SQLServer_OS_Version: Windows Server 2016                                   # ターゲットホストのOSバージョン
+# For storage tmp file
+VAR_Tmp_Folder: C:\Temp\AnsibleforSQLServer                                   # インストール用一時フォルダ
+# インストール物件の類型を指定する
+VAR_Installer_Type: ISO                                                         # SQLServerインストールパッケージのファイル類型を指定する。（ISO、CMP、PATHという三つの設定項目）
+# 展開されたインストール物件のフルパスを指定する
+VAR_Installer_Unzip_Path:                                                       # VAR_Installer_TypeがISO或はCMPの場合、Role：SQLServerインストールのみ実施する時、AnsibleでISOファイル或はCMPファイルを展開していないため、手動的にそのISOファイル或はCMPファイルを展開する必要。その時、展開されたフルパスを事前に設定する必要（例：E:\）。VAR_Installer_TypeがPATHの場合、直接に展開されたインストール物件のフルパスを設定してください。
+# When SQLServer has been installed, the program does not stop and skip preinstall & install Role。
+VAR_AllowSkip_SQLServerSWExist: false                                           # 既に指定のSQLServerインスタンスがインストールされた場合、処理を中止しないで事前準備ロールとSQLServerのInstallロールをスキップする/しない：true/false（デフォルトはfalse）
+
+# These directories will be created
+VAR_INI_Path: C:\Temp\AnsibleforSQLServer                                     # SQLServerインストール用INIファイルの格納パス
+
+# # Only for role: SQLServer_preinstall ##
+# The path of sysinfo which fetch from remote
+VAR_Sysinfo_Path: /tmp                                                          # ターゲットホストのシステム情報を確認するパス
+
+# FileName of Installer
+VAR_Installer_Name: SQLServer2016SP1-FullSlipstream-x64-JPN.iso                 # SQLServerインストールパッケージのファイル名（ISOファイル）
+# The path of installer and where to mount it. Make sure this path have enough space.
+VAR_Installer_Path: C:\Temp\AnsibleforSQLServer                               # SQLServerインストールパッケージのファイル格納パス
+VAR_Installer_URL: http://192.168.1.18:8080                                   # SQLServerインストールパッケージのファイルのWeb格納URL
+VAR_WinCopy: false                                                              # trueの場合、win_copyで利用して物件をコピーする。VAR_Installer_URLが設定された場合、win_get_urlで利用して物件をダウンロードする。
+
+# If the FireWall is running, this port will be set for allow.
+VAR_FireWall_Rule:                                                              # Firewallが有効の場合、関連のポート番号の通信許可を設定する
+# Name
+# Port
+# Protocol
+# Profiles
+# Name
+# Port
+# Protocol
+# Profiles
+# Name
+# Port
+# Protocol
+# Profiles
+# Name
+# Port
+# Protocol
+# Profiles
+# Name
+# Port
+# Protocol
+# Profiles
+# Name
+# Port
+# Protocol
+# Profiles
+# Name
+# Port
+# Protocol
+# Profiles
+# Name
+# Port
+# Protocol
+# Profiles
+# Name
+# Port
+# Protocol
+# Profiles
+# Name
+# Port
+# Protocol
+# Profiles
+# Name
+# Port
+# Protocol
+# Profiles
+# Name
+# Port
+# Protocol
+# Profiles
+# Name
+# Port
+# Protocol
+# Profiles
+# Name
+# Port
+# Protocol
+# Profiles
+
+# # Only for role: SQLServer_install ##
+
+OS_Language_Code: 932                                                           # インストール実施時、ターゲットホスト側のOS言語を指定する。日本語の場合MS932とする。
+VAR_Extra_Command:                                                              # 変数VAR_Extra_CommandはINIファイルに指定項目以外のオプションを設定しない場合、ここに指定してsetup.exeのコマンドラインに追加される。なお、INIファイルにも指定された場合、この変数に指定した値が優先である。例：　/SQLSVCACCOUNT="NT AUTHORITY\SYSTEM"
+
+# ###################### FOR INI INSTALL #######################
+
+# VAR_INSTANCEID
+VAR_INSTANCENAME: MSSQLSERVER                                                   # 必須項目。SQL Server インスタンス名を指定する。
+VAR_INSTANCEDIR:                                                                # 省略可項目。インスタンス専用のコンポーネントについて既定以外のインストール ディレクトリを指定する。
+VAR_ACTION: Install                                                             # 必須項目。インストール ワークフローを示すために必要である。
+# VAR_SUPPRESSPRIVACYSTATEMENTNOTICE
+VAR_ENU:
+VAR_UpdateEnabled: "False"                                                      # 省略可項目。SQL Server セットアップが製品の更新プログラムを検出し、それらを含める必要があるかどうかを指定します。有効値は True および False です。既定では、SQL Server セットアップには検出された更新プログラムが含まれます。Internetに繋げない場合、Falseに設定してください。
+# VAR_USEMICROSOFTUPDATE
+VAR_FEATURES: SQLENGINE,REPLICATION,FULLTEXT,DQ,DQC,CONN                        # 必須項目。インストールしたい機能である。
+VAR_UpdateSource:
+# VAR_HELP
+VAR_INDICATEPROGRESS:
+# VAR_X86
+VAR_INSTALLSHAREDDIR:
+VAR_INSTALLSHAREDWOWDIR:
+# VAR_SQLTELSVCACCT
+# VAR_SQLTELSVCSTARTUPTYPE
+VAR_AGTSVCACCOUNT:                                                              # SQL Server エージェント サービスのアカウントを指定します。
+VAR_AGTSVCPASSWORD:                                                             # SQL Server エージェント サービス アカウントのパスワードを指定します。
+VAR_AGTSVCSTARTUPTYPE:
+# VAR_COMMFABRICPORT
+# VAR_COMMFABRICNETWORKLEVEL
+# VAR_COMMFABRICENCRYPTION
+# VAR_MATRIXCMBRICKCOMMPORT
+VAR_SQLSVCSTARTUPTYPE:
+# VAR_FILESTREAMLEVEL
+VAR_ENABLERANU:
+VAR_SQLCOLLATION:                                                               # SQL Server サービスの開始アカウントを指定します。
+VAR_SQLSVCACCOUNT:                                                              # SQLSVCACCOUNT のパスワードを指定します。
+VAR_SQLSVCPASSWORD:                                                             # SQLSVCACCOUNT のパスワードを指定します。
+VAR_SQLSVCINSTANTFILEINIT:
+VAR_SQLSYSADMINACCOUNTS: Administrator                                          # 必須項目。sysadmin ロールのメンバーになるためにログインを準備するには、このパラメーターを使用する。
+VAR_SQLTEMPDBFILECOUNT:
+VAR_SQLTEMPDBFILESIZE:
+VAR_SQLTEMPDBFILEGROWTH:
+VAR_SQLTEMPDBLOGFILESIZE:
+VAR_SQLTEMPDBLOGFILEGROWTH:
+VAR_ADDCURRENTUSERASSQLADMIN:
+VAR_TCPENABLED:
+VAR_NPENABLED:
+VAR_BROWSERSVCSTARTUPTYPE:
+VAR_SAPWD :
+VAR_SECURITYMODE:
+VAR_PID:                                                                        # 省略可項目。SQL Server のエディション用のプロダクト キーを指定する。このパラメーターが指定されていない場合、Evaluation が使用される。
+VAR_ASSYSADMINACCOUNTS: Administrator                                           # AS機能をインストールする時、指定する必要。デフォルト値はAdministrator
+VAR_ASSVCACCOUNT:                                                               # Analysis Services サービスのアカウントを指定します。
+VAR_ASSVCPASSWORD:                                                              # Analysis Services サービスのパスワードを指定します。
+VAR_ISSVCACCOUNT:                                                               # Integration Servicesのアカウントを指定します。
+VAR_ISSVCPASSWORD:                                                              # Integration Services のパスワードを指定します。
+VAR_RSSVCACCOUNT:                                                               # Reporting Servicesの開始アカウントを指定します。
+VAR_RSSVCPASSWORD:                                                              # Reporting Services サービスの開始アカウントのパスワードを指定します。
