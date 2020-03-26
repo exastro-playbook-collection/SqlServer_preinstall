@@ -32,9 +32,9 @@
 
 - 管理マシン(Ansibleサーバ)
  * Linux系OS（RHEL7）
- * Ansible バージョン 2.4 以上
- * Python バージョン 2.6 または2.7
- 
+ * Ansible バージョン 2.4 以上 (動作確認バージョン 2.4, 2.9)
+ * Python バージョン 2.x, 3.x  (動作確認バージョン 2.6, 2.7, 3.6)
+
 - 管理対象マシン(構築対象マシン)
  * Windows Server 2016
  * Framework バージョン 3.0 以上
@@ -59,19 +59,21 @@ Role の変数値について説明します。
 	* VAR\_SQLServer\_OS\_Version：ターゲットホストのOSバージョン
 		* 例： Windows Server 2016
 	* VAR\_Tmp\_Folder：インストール用一時フォルダ
-		* 例： C:\Temp\AnsibleforSQLServer 
+		* 例： C:\Temp\AnsibleforSQLServer
 	* VAR\_Installer\_Type：インストール物件の類型を指定する
-		* 例：ISO		 
+		* 例：ISO
 	* VAR\_Installer\_Unzip\_Path：展開されたインストール物件のフルパスを指定する
 		* 例： E:\
-	* VAR\_AllowSkip\_SQLServerSWExist: 
+	* VAR\_AllowSkip\_SQLServerSWExist:
         既にSQLServerインスタンスがインストールされた場合、
         処理を中止しないで、事前準備ロールとSQLServerインストールロールをスキップする/しない：  
         true/false（デフォルトはfalse）  
 		* 例：true
-	* VAR_INI_Path：SQLServerインストール用INIファイルの格納パス
-		* 例：C:\Temp\AnsibleforSQLServer    
-</br>	
+	* VAR\_INI\_Path：SQLServerインストール用INIファイルの格納パス
+		* 例：C:\Temp\AnsibleforSQLServer  
+	* VAR\_INSTANCENAME：INIファイルINSTANCENAME変数  
+		* 例：MSSQLSERVER
+</br>
 - インストールの前準備 Role変数
 	* VAR\_Sysinfo\_Path：ターゲットホストのシステム情報を確認するパス
 		* 例：C:\Temp\AnsibleforSQLServer  
@@ -121,7 +123,7 @@ Role の変数値について説明します。
  * VAR\_Installer\_TypeがISOあるいはCMPの場合、Role：SQLServerインストールのみ実施する時、AnsibleでISOファイルあるいはCMPファイルを展開していないため、手動的にそのISOファイルあるいはCMPファイルを展開する必要。そのとき、展開されたフルパスを事前に設定する必要（例：E:\）。VAR\_Installer\_TypeがPATHの場合、直接に展開されたインストール物件のフルパスを設定してください。
 * 事前準備
  * 変数VAR\_Installer\_Pathで指定されたフォルダに十分のディスク容量があること（インストール物件および解凍されたもの）。　　
-  
+
 ## 備考
 
 * WebでSQLServerインストールパッケージのファイルを共有する方法：  
@@ -162,7 +164,7 @@ Role の変数値について説明します。
       * SqlServer_install/
       * SqlServer_preinstall/
   - sqlserverinstall.yml
-  - AllVariable.yml 
+  - AllVariable.yml
   - hosts
 ~~~
 
